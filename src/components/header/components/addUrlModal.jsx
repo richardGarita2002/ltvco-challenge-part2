@@ -1,17 +1,29 @@
 import { useState } from 'react';
-import Modal from '../../../utils/modal';
 import { useForm } from 'react-hook-form';
+import axios from '../../../utils/axiosConfig'; // Importing Axios instance configured with baseURL
+import Modal from '../../../utils/modal';
 
 export default function AddUrl(){
-    const [showModal, setShowModal] = useState(false);
-    const [shortCode, setShortCode] = useState('');
-    const {register, handleSubmit, formState: { errors, isValid },  } = useForm({mode: "all"});
+    const [showModal, setShowModal] = useState(false);  // State to control modal visibility
+    const [shortUrl, setShortUrl] = useState(''); // State to store generated short url
+    const {register, handleSubmit, formState: { errors, isValid },  } = useForm({mode: "all"}); // Form handling using react-hook-form
 
+    // Function to handle form submission
     const onSubmit = (data) => {
-        console.log(data);
-        setShortCode(data.full_url);
+        axios.post('/', data).then((response) => {
+            setShortUrl(`${axios.defaults.baseURL}/${response.data.short_code}`);
+        }).catch((error) => {
+            setShortUrl('');
+            console.error(error);
+            if (error.response && error.response.status === 422) {
+                alert('The URL is not valid. Try again please');
+            } else {
+                alert('An error was produced. Try again please');
+            }
+        })
     }
 
+    // Regular expression for URL validation
     const urlRegex = new RegExp(
         /(?:(?:(https?|ftp):)?\/\/)/.source       // protocol
         + /(?:([^:\n\r]+):([^@\n\r]+)@)?/.source  // user:pass
@@ -26,7 +38,7 @@ export default function AddUrl(){
             <Modal
                 showModal={showModal}
                 setShowModal={setShowModal}
-                title={'Generate your short code!'}
+                title={'Generate your short URL!'}
                 content={
                     <>
                         <form onSubmit={handleSubmit(onSubmit)}>
@@ -47,10 +59,10 @@ export default function AddUrl(){
                                 <button type='submit' disabled={!isValid} className='btn btn-primary ms-auto'>Generate</button>
                             </div>
 
-                            <section className={`mt-1 ${shortCode ? '' : 'd-none'}`}>
-                                <p>Here is your short code. Make sure you save it!</p>
+                            <section className={`mt-1 ${shortUrl ? '' : 'd-none'}`}>
+                                <p>Here is your shorten URL. Make sure you save it!</p>
                                 <div className='shortcode-box'>
-                                    <p><strong>{shortCode}</strong></p>
+                                    <p><strong>{shortUrl}</strong></p>
                                 </div>
                             </section>
                         </form>
