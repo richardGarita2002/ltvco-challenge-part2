@@ -9,3 +9,11 @@
 .link-item:hover{
     cursor: pointer;
 }
+
+.shortcode-box {
+    background-color: green;
+}
+
+.shortcode-box p {
+    color: #FFF;
+}
