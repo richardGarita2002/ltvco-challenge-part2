@@ -1,0 +1,11 @@
+.header {
+    background-color: blue;
+}
+
+.link-item{
+    color: #FFF !important;
+}
+
+.link-item:hover{
+    cursor: pointer;
+}
