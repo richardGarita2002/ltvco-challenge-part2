@@ -1,0 +1,9 @@
+.close-modal{
+    font-size: 1.5rem;
+    color: red;
+}
+
+.close-modal:hover{
+    cursor: pointer;
+    color: darkred;
+}
